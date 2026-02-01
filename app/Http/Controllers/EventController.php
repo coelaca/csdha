@@ -911,6 +911,8 @@ class EventController extends Controller implements HasMiddleware
         Event $event)
     {
         $activity = $event->gpoaActivity;
+        $authUserIsEventHead = $activity->eventHeadsOnly()
+            ->whereKey(auth()->user()->id)->exists();
         if ($request->event_heads && in_array('0', $request->event_heads)) {
             $activity->eventHeads()->syncWithPivotValues(User::has('position')
                 ->notOfPosition(['adviser'])->get(), ['role' => 'event head']);
@@ -919,18 +921,28 @@ class EventController extends Controller implements HasMiddleware
             $eventHeads = User::whereIn('public_id', array_diff(
                 $request->event_heads, $coheads))
                 ->pluck('id')->toArray();
-            $activity->eventheads()->syncWithPivotValues([auth()->user()->id],
-                ['role' => 'event head']);
-            $activity->eventHeads()->syncWithPivotValues($coheads,
-                ['role' => 'co-head'], false);
+            if ($authUserIsEventHead) {
+                $activity->eventheads()->syncWithPivotValues([auth()->user()->id],
+                    ['role' => 'event head']);
+                $activity->eventHeads()->syncWithPivotValues($coheads,
+                    ['role' => 'co-head'], false);
+            } else {
+                $activity->eventHeads()->syncWithPivotValues($coheads,
+                    ['role' => 'co-head']);
+            }
             $activity->eventHeads()->syncWithPivotValues($eventHeads,
                 ['role' => 'event head'], false);
         } else {
             $coheads = $activity->coheads()->pluck('users.id')->toArray();
-            $activity->eventheads()->syncWithPivotValues([auth()->user()],
-                ['role' => 'event head']);
-            $activity->eventHeads()->syncWithPivotValues($coheads,
-                ['role' => 'co-head'], false);
+            if ($authUserIsEventHead) {
+                $activity->eventheads()->syncWithPivotValues([auth()->user()],
+                    ['role' => 'event head']);
+                $activity->eventHeads()->syncWithPivotValues($coheads,
+                    ['role' => 'co-head'], false);
+            } else {
+                $activity->eventHeads()->syncWithPivotValues($coheads,
+                    ['role' => 'co-head']);
+            }
         }
         $activity->save();
         return redirect()->route('events.show', [

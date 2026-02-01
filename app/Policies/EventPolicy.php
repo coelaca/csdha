@@ -288,7 +288,7 @@ class EventPolicy
             ->exists();
         $president = $user->position_name === 'president';
         $adviser = $user->position_name === 'adviser';
-        return ($eventHead || $president || $adviser)
+        return ($eventHead)
             ? Response::allow() : Response::deny();
     }
 
