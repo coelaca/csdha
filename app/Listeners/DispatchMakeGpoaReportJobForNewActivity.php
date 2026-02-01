@@ -16,6 +16,7 @@ class DispatchMakeGpoaReportJobForNewActivity
 
     public function handle(GpoaActivityStatusChanged $event): void
     {
+/*
         $gpoa = $event->activity->gpoa;
         $activity = $event->activity;
         if ($activity->status !== 'approved') return;
@@ -23,5 +24,6 @@ class DispatchMakeGpoaReportJobForNewActivity
         $gpoa->save();
         MakeGpoaReport::dispatch($gpoa, auth()->user(), $activity)
             ->onQueue('pdf');
+*/
     }
 }

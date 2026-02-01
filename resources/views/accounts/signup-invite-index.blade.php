@@ -15,17 +15,20 @@
 			<div class="content">
 				<p id="signup-invite-{{ $invite->id }}">{{ $invite->position?->name ?? 'No position'}}</p>
 				<p>{{ $invite->email }}</p>
-				<p>Status:
-				@switch ($invite->email_sent)
-				@case (1)
-					Email sent
-					@break
-				@case (1)
-					Email not sent
-					@break
-				@default
-					Sending email
-				@endswitch
+				<p>Status: 
+					<span id="signup-invite-{{ $invite->id }}-status">
+					@switch ($invite->email_sent)
+					@case (null)
+						Sending email
+						@break
+					@case (1)
+						Email sent
+						@break
+					@case (0)
+						Email not sent
+						@break
+					@endswitch
+					</span>
 				</p>
 			</div>
 			<div class="context-menu">
@@ -68,16 +71,16 @@
 	</form>
 </x-window>
 <x-window class="form" id="signup-invite_delete" title="Revoke Sign-up Invite">
-    <p>
-        Are you sure you want to revoke this sign up invitation for <strong id="signup-invite_delete-content"></strong>?
-    </p> 
-    <div class="submit-buttons">
-        <button id="signup-invite_delete_close">Cancel</button>
-        <button form="delete-form">Revoke</button>
-    </div>
-    <form id="delete-form" method="post"> 
-        @method('DELETE') 
-        @csrf 
-    </form>
+	<p>
+		Are you sure you want to revoke this sign up invitation for <strong id="signup-invite_delete-content"></strong>?
+	</p> 
+	<div class="submit-buttons">
+		<button id="signup-invite_delete_close">Cancel</button>
+		<button form="delete-form">Revoke</button>
+	</div>
+	<form id="delete-form" method="post"> 
+	@method('DELETE') 
+	@csrf 
+	</form>
 </x-window>
 </x-layout.user>

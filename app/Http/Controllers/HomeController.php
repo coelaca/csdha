@@ -16,7 +16,7 @@ class HomeController extends Controller
     {
         $gpoaActive = Gpoa::active()->exists();
         $gpoa = Gpoa::active()->first();
-	if (!$gpoa) {
+	    if (!$gpoa) {
             return view('home.user', [
                 'gpoaActive' => false,
                 'pendingAccomReportCount' => 0,

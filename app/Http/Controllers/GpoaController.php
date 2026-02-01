@@ -94,6 +94,7 @@ class GpoaController extends Controller implements HasMiddleware
     public function store(SaveGpoaRequest $request)
     {
         self::storeOrUpdate($request);
+        GpoaStatusChanged::dispatch();
         return redirect()->route('gpoa.index');
     }
 
@@ -322,6 +323,7 @@ class GpoaController extends Controller implements HasMiddleware
         $gpoa->report_file_updated = false;
         */
         self::closeGpoa();
+        GpoaStatusChanged::dispatch();
         return redirect()->route('gpoa.index')->with('status', $status);
     }
 

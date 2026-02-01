@@ -2,6 +2,7 @@
 
 import * as timezone from "./modules/timezone";
 import * as home from "./modules/home";
+import * as signupInvite from "./modules/signup_invite";
 import * as dialog from "./modules/window";
 import * as events from "./modules/events";
 import * as accomReports from "./modules/accom_reports";
@@ -347,6 +348,7 @@ function browseFiles(e) {
 
 home.streamHome();
 home.streamHomeInfos();
+signupInvite.streamSignupInviteStatus();
 setTimezoneActions();
 setEvents();
 dialog.openWindow(true);

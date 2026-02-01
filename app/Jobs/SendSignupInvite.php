@@ -8,6 +8,7 @@ use App\Models\SignupInvitation;
 use App\Mail\SignupInvitation as SignupInvitationMail;
 use Illuminate\Support\Facades\Mail;
 use Throwable;
+use App\Events\SignupInviteStatusChanged;
 
 class SendSignupInvite implements ShouldQueue
 {
@@ -26,6 +27,7 @@ class SendSignupInvite implements ShouldQueue
             $this->url));
         $signupInvite->email_sent = true;
         $signupInvite->save();
+        SignupInviteStatusChanged::dispatch($signupInvite);
     }
 
     public function failed(?Throwable $exception): void
@@ -33,5 +35,6 @@ class SendSignupInvite implements ShouldQueue
         $signupInvite = $this->signupInvite;
         $signupInvite->email_sent = false;
         $signupInvite->save();
+        SignupInviteStatusChanged::dispatch($signupInvite);
     }
 }

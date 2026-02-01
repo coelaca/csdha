@@ -31,10 +31,6 @@ class Stream
                 yield new StreamedEvent(
                     event: $response['event'],
                     data: $response['data']
-/*
-                    event: $response['event'],
-                    data: $response['data']
-*/
                 );
             }
             /*

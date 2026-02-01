@@ -14,6 +14,7 @@ use App\Http\Requests\UpdateAccountRequest;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use App\Jobs\SendSignupInvite;
+use App\Services\Stream;
 
 class AccountController extends Controller implements HasMiddleware
 {
@@ -149,5 +150,10 @@ class AccountController extends Controller implements HasMiddleware
             ]),
 			'invite' => $invite,
         ]);
+    }
+
+    public function streamSignupInvite()
+    {
+        return Stream::event('signup_invite');
     }
 }
