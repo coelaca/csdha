@@ -22,7 +22,7 @@ class UpdateEventHeadsRequest extends FormRequest
         return [
             'event_heads' => ['array'],
             'event_heads.*' => ['nullable', 'numeric', 'integer',
-                new Exists(User::has('position')->notAuthUser()
+                new Exists(User::has('position')
                     ->notOfPosition(['adviser']), 'public_id', ['0'])
             ],
         ];

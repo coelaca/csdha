@@ -7,9 +7,6 @@
 		<p>
 			<label>Event Head</label>
 			<select multiple size="5" name="event_heads[]">
-			@if ($authUserIsEventHead))
-				<option disabled value="">{{ auth()->user()->full_name }} (Added)</option>
-			@endif
 				<option value="0" 
 				@if ($errors->any())
 					{{ in_array('0', old('event_heads') ?? []) ? 'selected' : null }}

@@ -919,28 +919,15 @@ class EventController extends Controller implements HasMiddleware
             $eventHeads = User::whereIn('public_id', array_diff(
                 $request->event_heads, $coheads))
                 ->pluck('id')->toArray();
-            if ($authUserIsEventHead) {
-                $activity->eventheads()->syncWithPivotValues([auth()->user()->id],
-                    ['role' => 'event head']);
-                $activity->eventHeads()->syncWithPivotValues($coheads,
-                    ['role' => 'co-head'], false);
-            } else {
-                $activity->eventHeads()->syncWithPivotValues($coheads,
-                    ['role' => 'co-head']);
-            }
+            $activity->eventHeads()->syncWithPivotValues($coheads,
+                ['role' => 'co-head']);
             $activity->eventHeads()->syncWithPivotValues($eventHeads,
                 ['role' => 'event head'], false);
         } else {
             $coheads = $activity->coheads()->pluck('users.id')->toArray();
-            if ($authUserIsEventHead) {
-                $activity->eventheads()->syncWithPivotValues([auth()->user()],
-                    ['role' => 'event head']);
-                $activity->eventHeads()->syncWithPivotValues($coheads,
-                    ['role' => 'co-head'], false);
-            } else {
-                $activity->eventHeads()->syncWithPivotValues($coheads,
-                    ['role' => 'co-head']);
-            }
+            $activity->eventHeads()->syncWithPivotValues($coheads,
+                ['role' => 'co-head']);
+
         }
         $activity->save();
         return redirect()->route('events.show', [
@@ -983,33 +970,17 @@ class EventController extends Controller implements HasMiddleware
         if (!$request->coheads || in_array('0', 
 			$request->coheads ?? [])) {
             $eventHeads = $activity->eventHeadsOnly()->pluck('users.id')->toArray();
-            if ($authUserIsEventHead) {
-                $activity->eventheads()->syncWithPivotValues([auth()->user()->id],
-                    ['role' => 'event head']);
-                $activity->eventHeads()->syncWithPivotValues($eventHeads,
-                    ['role' => 'event head'], false);
-            } else {
-                $activity->eventHeads()->syncWithPivotValues($eventHeads,
-                    ['role' => 'event head']);
-            }
+            $activity->eventHeads()->syncWithPivotValues($eventHeads,
+                ['role' => 'event head']);
         } elseif (!$allAreEventHeads && $request->coheads) {
             $eventHeads = $activity->eventHeadsOnly()->pluck('users.id')->toArray();
             $coheads = User::whereIn('public_id', array_diff(
                 $request->coheads, $eventHeads))
                 ->pluck('id')->toArray();
-            if ($authUserIsEventHead) {
-                $activity->eventheads()->syncWithPivotValues([auth()->user()->id],
-                    ['role' => 'event head']);
-                $activity->eventHeads()->syncWithPivotValues($eventHeads,
-                    ['role' => 'event head'], false);
-                $activity->eventHeads()->syncWithPivotValues($coheads,
-                    ['role' => 'co-head'], false);
-            } else {
-                $activity->eventHeads()->syncWithPivotValues($eventHeads,
-                    ['role' => 'event head']);
-                $activity->eventHeads()->syncWithPivotValues($coheads,
-                    ['role' => 'co-head'], false);
-            }
+            $activity->eventHeads()->syncWithPivotValues($eventHeads,
+                ['role' => 'event head']);
+            $activity->eventHeads()->syncWithPivotValues($coheads,
+                ['role' => 'co-head'], false);
         }
         $activity->save();
         return redirect()->route('events.show', [
@@ -1022,24 +993,24 @@ class EventController extends Controller implements HasMiddleware
         $activity = $event->gpoaActivity;
         $allAreEventHeads = $activity->all_are_event_heads;
         $selectedEventHeads = [];
-        $eventHeads = User::has('position')->notAuthUser()->
+        $eventHeads = User::has('position')->
                 notOfPosition(['adviser'])->get();
         $eventHeadGroups = ['0'];
         if (session('errors')?->any()) {
             $selectedEventHeads = User::whereIn('public_id', old('event_heads') 
-                ?? [])->has('position')->notAuthUser()
+                ?? [])->has('position')
                 ->notOfPosition('adviser')->get();
             $eventHeads = User::whereNotIn('public_id', old('event_heads') 
-                ?? [])->has('position')->notAuthUser()
+                ?? [])->has('position')
                 ->notOfPosition('adviser')->get();
         } elseif (!$allAreEventHeads) {
-            $selectedEventHeads = $activity->eventHeadsOnly()->notAuthUser()
+            $selectedEventHeads = $activity->eventHeadsOnly()
                 ->get();
             $eventHeads = User::whereDoesntHave('gpoaActivities', 
                 function ($query) use ($activity) {
                 $query->where('gpoa_activities.id', $activity->id)
                     ->where('gpoa_activity_event_heads.role', 'event head');
-            })->notAuthUser()->notOfPosition('adviser')->get();
+            })->notOfPosition('adviser')->get();
         }
         return [
             'selectedEventHeads' => $selectedEventHeads,
@@ -1052,22 +1023,22 @@ class EventController extends Controller implements HasMiddleware
         $activity = $event->gpoaActivity;
         $allAreEventHeads = $activity->all_are_event_heads;
         $selectedCoheads = [];
-        $coheads = User::has('position')->notAuthUser()->
+        $coheads = User::has('position')->
                 notOfPosition(['adviser'])->get();
         if (session('errors')?->any()) { 
             $selectedCoheads = User::whereIn('public_id', old('coheads') 
-                ?? [])->has('position')->notAuthUser()
+                ?? [])->has('position')
                 ->notOfPosition('adviser')->get();
             $coheads = User::whereNotIn('public_id', old('coheads') 
-                ?? [])->has('position')->notAuthUser()
+                ?? [])->has('position')
                 ->notOfPosition('adviser')->get();
         } else {
-            $selectedCoheads = $activity->coheads()->notAuthUser()->get();
+            $selectedCoheads = $activity->coheads()->get();
             $coheads = User::whereDoesntHave('gpoaActivities', 
                 function ($query) use ($activity) {
                 $query->where('gpoa_activities.id', $activity->id)
                     ->where('gpoa_activity_event_heads.role', 'co-head');
-            })->notAuthUser()->notOfPosition('adviser')->get();
+            })->notOfPosition('adviser')->get();
         }
         return [
             'selectedCoheads' => $selectedCoheads,
