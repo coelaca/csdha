@@ -68,7 +68,11 @@
 			@endif
 			@if ($event->accept_evaluation)
 				<tr>
-					<th>Evaluation Form <span class="edit-link">[ <a href="{{ $evalRoute }}">Edit</a> ]</span></th>
+					<th>Evaluation Form 
+					@can ('update', $event)
+						<span class="edit-link">[ <a href="{{ $evalRoute }}">Edit</a> ]</span>
+					@endcan
+					</th>
 					<td><a href="{{ $evalPreviewRoute }}">Show Preview</a></td>
 				</tr>
 				<tr>
@@ -158,7 +162,7 @@
 				</tr>
 				<tr>
 					<th>Event Head 
-					@can ('updateEventHeads', $event)
+					@can ('update', $event)
 						<span class="edit-link">[ <a id="event-heads_edit-button" href="{{ $eventHeadsRoute }}">Edit</a> ]</span>
 					@endcan
 					</th>
@@ -172,7 +176,7 @@
 				</tr>
 				<tr>
 					<th>Co-head 
-					@can ('updateEventHeads', $event)
+					@can ('update', $event)
 						<span class="edit-link">[ <a id="event-coheads_edit-button" href="{{ $coheadsRoute }}">Edit</a> ]</span>
 					@endcan
 					</th>
@@ -288,6 +292,9 @@
 		<p>
 			<label>Co-head (optional)</label>
 			<select multiple size="5" name="coheads[]"> 
+			@if ($authUserIsCohead))
+				<option disabled value="">{{ auth()->user()->full_name }} (Added)</option>
+			@endif
 				<option value="0">None</option>
 			@foreach ($selectedCoheads as $selectedCohead)
 				<option value="{{ $selectedCohead->public_id }}" selected>{{ $selectedCohead->full_name }}</option>

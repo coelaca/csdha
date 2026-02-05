@@ -35,16 +35,14 @@ class EventPolicy
     {
         $active = $event->gpoa()->active;
         if (!$active) return Response::deny();
-        if (!self::canEdit($user, $event)) {
-            return Response::deny();
-        }
+        $canEdit = self::canEdit($user, $event);
         $approved = $event->accomReport?->status === 'approved';
         $pending = $event->accomReport?->status === 'pending';
         $eventHead = $event->gpoaActivity->eventHeads()->whereKey($user->id)
             ->exists();
         $editor = $user->hasPerm('accomplishment-reports.view') &&
             $user->hasPerm('accomplishment-reports.edit');
-        return (!($approved || $pending) && ($eventHead || $editor))
+        return ($canEdit || !($approved || $pending) && ($eventHead || $editor))
             ? Response::allow() : Response::deny();
     }
 
@@ -280,15 +278,13 @@ class EventPolicy
     {
         $active = $event->gpoa()->active;
         if (!$active) return Response::deny();
-        if (!self::canEdit($user, $event)) {
-            return Response::deny();
-        }
         $activity = $event->gpoaActivity;
         $eventHead = $activity->eventHeadsOnly()?->whereKey($user->id)
             ->exists();
         $president = $user->position_name === 'president';
         $adviser = $user->position_name === 'adviser';
-        return ($eventHead)
+        $canEdit = self::canEdit($user, $event);
+        return ($eventHead || $canEdit)
             ? Response::allow() : Response::deny();
     }
 

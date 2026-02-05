@@ -19,7 +19,8 @@ class EventEvalFormController extends Controller implements HasMiddleware
     {
         return [
             new Middleware('auth.event:update,event', only: [
-                'updateQuestions'
+                'updateQuestions',
+				'editQuestions'
             ]),
         ];
     }

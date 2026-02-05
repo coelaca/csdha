@@ -77,6 +77,10 @@ class EventController extends Controller implements HasMiddleware
                 'updateVenue',
                 'editBanner',
                 'updateBanner',
+                'editEventHeads',
+                'updateEventHeads',
+                'editCoheads',
+                'updateCoheads',
             ]),
             new Middleware('auth.event:delete,event', only: ['destroy']),
             new Middleware('auth.event:update,date', only: [
@@ -89,12 +93,6 @@ class EventController extends Controller implements HasMiddleware
             ]),
             new Middleware('auth.event:recordAttendance,event', only: [
                 'showAttendance',
-            ]),
-            new Middleware('auth.event:updateEventHeads,event', only: [
-                'editEventHeads',
-                'updateEventHeads',
-                'editCoheads',
-                'updateCoheads',
             ]),
         ];
     }
@@ -963,6 +961,8 @@ class EventController extends Controller implements HasMiddleware
                 ->whereKey(auth()->user()->id)->exists(),
             'authUserIsCohead' => $activity->coheads()
                 ->whereKey(auth()->user()->id)->exists(),
+            'authUserIsCohead' => $activity->coheads()
+                ->whereKey(auth()->user()->id)->exists(),
             'allAreEventHeads' => $activity->all_are_event_heads,
             'backRoute' => route('events.show', [
                 'event' => $event->public_id
@@ -978,24 +978,38 @@ class EventController extends Controller implements HasMiddleware
     {
         $activity = $event->gpoaActivity;
         $allAreEventHeads = $activity->all_are_event_heads;
+        $authUserIsEventHead = $activity->eventHeadsOnly()
+            ->whereKey(auth()->user()->id)->exists();
         if (!$request->coheads || in_array('0', 
 			$request->coheads ?? [])) {
             $eventHeads = $activity->eventHeadsOnly()->pluck('users.id')->toArray();
-            $activity->eventheads()->syncWithPivotValues([auth()->user()->id],
-                ['role' => 'event head']);
-            $activity->eventHeads()->syncWithPivotValues($eventHeads,
-                ['role' => 'event head'], false);
+            if ($authUserIsEventHead) {
+                $activity->eventheads()->syncWithPivotValues([auth()->user()->id],
+                    ['role' => 'event head']);
+                $activity->eventHeads()->syncWithPivotValues($eventHeads,
+                    ['role' => 'event head'], false);
+            } else {
+                $activity->eventHeads()->syncWithPivotValues($eventHeads,
+                    ['role' => 'event head']);
+            }
         } elseif (!$allAreEventHeads && $request->coheads) {
             $eventHeads = $activity->eventHeadsOnly()->pluck('users.id')->toArray();
             $coheads = User::whereIn('public_id', array_diff(
                 $request->coheads, $eventHeads))
                 ->pluck('id')->toArray();
-            $activity->eventheads()->syncWithPivotValues([auth()->user()->id],
-                ['role' => 'event head']);
-            $activity->eventHeads()->syncWithPivotValues($eventHeads,
-                ['role' => 'event head'], false);
-            $activity->eventHeads()->syncWithPivotValues($coheads,
-                ['role' => 'co-head'], false);
+            if ($authUserIsEventHead) {
+                $activity->eventheads()->syncWithPivotValues([auth()->user()->id],
+                    ['role' => 'event head']);
+                $activity->eventHeads()->syncWithPivotValues($eventHeads,
+                    ['role' => 'event head'], false);
+                $activity->eventHeads()->syncWithPivotValues($coheads,
+                    ['role' => 'co-head'], false);
+            } else {
+                $activity->eventHeads()->syncWithPivotValues($eventHeads,
+                    ['role' => 'event head']);
+                $activity->eventHeads()->syncWithPivotValues($coheads,
+                    ['role' => 'co-head'], false);
+            }
         }
         $activity->save();
         return redirect()->route('events.show', [
