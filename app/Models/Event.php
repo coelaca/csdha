@@ -20,6 +20,11 @@ class Event extends Model
 {
     use HasPublicId;
 
+    public function tasks(): HasMany
+    {
+        return $this->hasMany(Task::class);
+    }
+
     public function links(): HasMany
     {
         return $this->hasMany(EventLink::class);
