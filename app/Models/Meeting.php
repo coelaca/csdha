@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Meeting extends Model
 {
-    public function user(): BelongsTo
+    public function status(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(MeetingStatus::class);
     }
 }

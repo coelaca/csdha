@@ -5,12 +5,25 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use App\Traits\HasPublicId;
 
 class Student extends Model
 {
     use HasPublicId;
+
+    public function events(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            EventAttendee::class,
+            EventStudent::class,
+            'student_id',
+            'event_student_id',
+            'student_id',
+            'id'
+        );
+    }
     
     public function course(): BelongsTo
     {
@@ -51,11 +64,6 @@ class Student extends Model
     {
         return $this->belongsToMany(Event::class, 'event_attendances')
             ->using(EventAttendance::class);
-    }
-
-    public function events(): HasMany
-    {
-        return $this->hasMany(EventAttendance::class, 'event_id'); 
     }
 
     public function sectionModel(): BelongsTo
