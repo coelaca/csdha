@@ -25,7 +25,7 @@ Thumbs.db
 
 /container/config/apache/main-site.conf
 /container/config/apache/main-site.conf.backup
-/k8s/secret.yaml
+/kube/secret.yaml
 .env.admin
 .env.production-admin
 /public/build-legacy
