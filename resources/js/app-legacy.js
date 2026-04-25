@@ -1,5 +1,6 @@
 /* app-legacy.js */
 
+import "materialize-css/dist/js/materialize.js"; 
 import * as timezone from "./modules/timezone";
 import * as home from "./modules/home";
 import * as signupInvite from "./modules/signup_invite";
@@ -8,6 +9,33 @@ import * as events from "./modules/events";
 import * as accomReports from "./modules/accom_reports";
 import * as gpoaActivities from "./modules/gpoa_activities";
 import * as students from "./modules/students";
+
+document.addEventListener('DOMContentLoaded', function() {
+	var elems = document.querySelectorAll('.fixed-action-btn');
+    var instances = M.FloatingActionButton.init(elems, {
+		hoverEnabled: false
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+	var elems = document.querySelectorAll('.sidenav');
+	var instances = M.Sidenav.init(elems);
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+	var elems = document.querySelectorAll('.dropdown-trigger');
+	var options = {
+		constrainWidth: false,
+		coverTrigger: false,
+	};
+	var instances = M.Dropdown.init(elems, options);
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+	var elems = document.querySelectorAll('select');
+	var instances = M.FormSelect.init(elems);
+});
+
 
 function runActions(actionDeps) {
 	var actions, depends, action, depend, satisfied;

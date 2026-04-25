@@ -1,5 +1,194 @@
 /* app.scss */
 
+@use "materialize-css/dist/css/materialize.css";
+@use 'material-icons/iconfont/material-icons.css';
+
+@font-face {
+    font-family: Roboto;
+    src: url("/font/Roboto-Regular.ttf");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: Roboto;
+    src: url("/font/Roboto-Medium.ttf");
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: Roboto;
+    src: url("/font/Roboto-Bold.ttf");
+    font-weight: 600;
+    font-style: normal;
+}
+
+$mt-border: 1px solid #e0e0e0; 
+$text-color: rgba(0, 0, 0, 0.87);
+$disabled-text-color: rgba(0,0,0,0.3);
+
+html {
+	font-family: Roboto;
+	font-weight: normal;
+}
+
+ul.sidenav.sidenav-fixed {
+	box-shadow: none;
+	border-right: $mt-border;
+}
+
+nav .mt-nav-title {
+	font-family: Roboto;
+	font-weight: 500;
+	display: inline-block;
+	font-size: 20px;
+	margin: 0 18px;
+}
+
+nav {
+	background-color: #1976D2;
+}
+
+body.index {
+	.nav-wrapper, header, main, footer {
+		padding-left: 300px;
+	}
+}
+
+body.form {
+  background-color: #fafafa;
+}
+
+.btn-floating, .btn-floating:hover {
+	background-color: #448aff;
+}
+
+.back-button {
+	@extend .sidenav-trigger;
+}
+
+.mt-main-panel {
+	padding: 24px;
+	background-color: #fff;
+}
+
+.mt-main-flat-panel {
+	padding: 24px;
+	background-color: #fff;
+}
+
+.mt-main-table-panel {
+	padding: 0 16px 16px;
+}
+
+.mt-form-panel {
+	@extend .mt-main-panel;
+	padding: 16px;
+}
+
+input[type="checkbox"] + span {
+	color: $text-color;
+}
+
+input[type="checkbox"][disabled] + span {
+	color: $disabled-text-color;
+}
+
+fieldset {
+	padding: 0;
+	border: 0;
+
+	legend {
+		color: #9e9e9e;
+		font-size: 0.8rem;
+	}
+}
+
+.radio-button {
+	color: inherit;
+}
+
+input[type="radio"] {
+	@extend .with-gap;
+}
+
+.form-button {
+	text-align: right;
+
+	.btn {
+		margin-right: 8px;
+	}
+
+	.btn:last-child {
+		margin-right: 0;
+	}
+}
+
+.dropdown-content li > a, .dropdown-content li > span {
+	color: inherit;
+}
+
+.alert {
+	padding: 1px 24px;
+	background-color: #fdeded;
+	color: #5f2120;
+	margin-bottom: 24px; 
+}
+
+table > tbody > tr:hover a {
+  text-decoration: underline;
+}
+
+a {
+  color: #448aff;
+}
+
+.mt-checkbox-inline > * {
+	display: inline-block;
+	margin-right: 32px;
+}
+
+.mt-form-title {
+	margin: 0;
+}
+
+@media only screen and (min-width: 708px) {
+	.mt-main-panel {
+		max-width: 684px;
+		margin: 0.5rem auto 1rem auto;
+		-webkit-transition: -webkit-box-shadow 0.25s;
+		transition: -webkit-box-shadow 0.25s;
+		transition: box-shadow 0.25s;
+		transition: box-shadow 0.25s, -webkit-box-shadow 0.25s;
+		border-radius: 2px;
+		-webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+		box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+	}
+
+	.mt-main-flat-panel {
+		max-width: 684px;
+		margin: 0 auto;
+	}
+}
+
+@media only screen and (max-width : 992px) {
+	body.index {
+		.nav-wrapper, header, main, footer {
+			padding-left: 0;
+		}
+	}
+}
+
+@media only screen and (min-width: 993px) {
+	nav a.back-button {
+		display: inline;
+	}
+}
+
+
+
+/*
 @use "modern-normalize/modern-normalize";
 @use "layout/html";
 @use "layout/form";
@@ -24,7 +213,6 @@
 @use "modules/settings";
 @use "test";
 
-/*
 @use "modules/ui-controls";
 @use "modules/meetings";
 @use "modules/platforms";
@@ -33,9 +221,9 @@
 
 /*
 :root {
-	--page-width: 72rem;
+    --page-width: 72rem;
     --page-padding: 1rem;
-	--text-width: 40rem;
+    --text-width: 40rem;
     --header-height: 3.5rem;
     --sidebar-width: 17rem;
 
@@ -126,16 +314,3 @@
     font-weight: bold;
     font-style: italic;
 }
-
-
-
-@source "../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php";
-@source "../../storage/framework/views/*.php";
-@source "../**/*.blade.php";
-@source "../**/*.js";
-
-@theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
-}
-

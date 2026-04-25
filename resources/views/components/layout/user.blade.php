@@ -44,219 +44,90 @@ $hasToolbar = isset($toolbar) && $toolbar->hasActualContent();
 	@vite(['resources/scss/' . $style])
 @endif
 </head>
-<body class="main-body {{ $index ? 'index' : null }} {{ $form || $contentView ? 'form view' : null }} {{ $hasToolbar ? 'has-toolbar' : null }}">
-@if ($index)
-	<div class="main-header" id="menu">
-		<a href="#" class="close-menu-button">
-			<span class="text">Close Menu</span>
-		</a>
-		<div class="content-block">
-			<div class="main-header-title">
-				<div class="main-brand">
-					<img class="logo" src="{{ asset('storage/website-logo.png') . '?id=' . cache('website_logo_id') }}">
-
-					<span class="name">CSDHA</span>
-				</div>
-				<div class="main-account-link">
-						<a href="{{ route('profile.edit') }}">
-							<img class="icon" src="{{ asset('icon/dark/user-circle.png') }}">
-							<span class="text">Account</span>
-						</a>
-				</div>
-			</div>
-			<div class="main-header-info">
-				<div class="account">
-					<div class="info">
-						<div class="avatar">
-						@if (auth()->user()->avatar_filepath)
-							@if ($siteContext === 'user')
-							<img src="{{ route('profile.showAvatar', ['avatar' => basename(auth()->user()->avatar_filepath)]) }}">
-							@elseif ($siteContext === 'admin')
-							<img src="{{ route('admin-profile.showAvatar', ['avatar' => basename(auth()->user()->avatar_filepath)]) }}">
-							@endif
-						@else
-							<img src="{{ asset('icon/user.svg') }}">
-						@endif
-						</div>
-						<div class="details">
-							<p class="name">{{ auth()->user()->full_name }}</p>
-						@if ($siteContext === 'admin')
-							<p class="position">{{ ucwords(auth()->user()->role?->name) }}</p>
-						@elseif ($siteContext === 'user')
-							<p class="position">{{ auth()->user()->position?->name }}</p>
-						@endif
-						</div>
-					</div>
-				@if ($siteContext === 'user')
-					<p class="main-action">
-						<a href="{{ route('profile.edit') }}">
-							<img class="icon" src="{{ asset('icon/dark/pencil-simple-line.svg') }}">
-							<span class="text">Edit account</span>
-						</a>
-					</p>
-				@endif
-				</div>
-			</div>
-			<div class="main-header-menu">
-				<p class="title">Menu</p>
-				<ul class="list">
-				@if ($siteContext === 'user')
-					<li class="{{ Format::currentIndex($userHomeRoute) ? 'current-page' : null }}">
-						<a href="{{ $userHomeRoute }}">
-							<img class="icon" src="{{ asset('icon/dark/house.svg') }}">
-							<span class="text">Home</span>
-						</a>
-					</li>
-					@can ('viewAny', 'App\Models\Gpoa')
-					<li class="{{ Format::currentIndex($gpoaRoute) ? 'current-page' : null }}">
-						<a href="{{ $gpoaRoute }}">
-							<img class="icon" src="{{ asset('icon/dark/blueprint.svg') }}">
-							<span class="text">GPOA</span>
-						</a>
-					</li>
-					@endcan
-					@can ('viewAny', 'App\Models\Event')
-					<li class="{{ Format::currentIndex($eventsRoute) ? 'current-page' : null }}">
-						<a href="{{ $eventsRoute }}">
-							<img class="icon" src="{{ asset('icon/dark/calendar.svg') }}">
-							<span class="text">Events</span>
-						</a>
-					</li>
-					@endcan
-					@can ('viewAnyAccomReport', 'App\Models\Event')
-					<li class="{{ Format::currentIndex($accomReportsRoute) ? 'current-page' : null }}">
-						<a href="{{ $accomReportsRoute }}">
-							<img class="icon" src="{{ asset('icon/dark/files.svg') }}">
-							<span class="text">Accom. Reports</span>
-						</a>
-					</li>
-					@endcan
-					{{--
-					@can ('viewAny', 'App\Models\Student')
-					<li>
-						<a href="{{ route('students.index') }}">
-							<span class="icon"><x-phosphor-student/></span>
-							<span class="text">Students</span>
-						</a>
-					</li>
-					@endcan
-					--}}
-					@can ('viewAny', 'App\Models\Position')
-					<li class="{{ Format::currentIndex($positionsRoute) ? 'current-page' : null }}">
-						<a href="{{ $positionsRoute }}">
-							<img class="icon" src="{{ asset('icon/dark/users-three.svg') }}">
-							<span class="text">Central Body</span>
-						</a>
-					</li>
-					@endcan
-					@can ('viewAttendance', 'App\Models\Event')
-					<li class="{{ Format::currentIndex($attendanceRoute) ? 'current-page' : null }}">
-						<a href="{{ $attendanceRoute }}">
-							<img class="icon" src="{{ asset('icon/dark/user-check.svg') }}">
-							<span class="text">Attendance</span>
-						</a>
-					</li>
-					@endcan
-					@if (auth()->user()->hasPerm('settings.view'))
-					<li class="{{ Format::currentIndex($settingsRoute) ? 'current-page' : null }}">
-						<a href="{{ $settingsRoute }}">
-							<img class="icon" src="{{ asset('icon/dark/wrench.svg') }}">
-							<span class="text">Settings</span>
-						</a>
-					</li>
-					@endif
-					<li class="{{ Format::currentIndex($userSignoutRoute) ? 'current-page' : null }}">
-						<a href="{{ $userSignoutRoute }}">
-							<img class="icon" src="{{ asset('icon/dark/sign-out.svg') }}">
-							<span class="text">Sign out</span>
-						</a>
-					</li>
-				@elseif ($siteContext === 'admin')
-					<li class="{{ Format::currentIndex($adminHomeRoute) ? 'current-page' : null }}">
-						<a href="{{ $adminHomeRoute }}">
-							<img class="icon" src="{{ asset('icon/dark/house.svg') }}">
-							<span class="text">Home</span>
-						</a>
-					</li>
-					<li class="{{ Format::currentIndex($auditRoute) ? 'current-page' : null }}">
-						<a href="{{ $auditRoute }}">
-							<img class="icon" src="{{ asset('icon/dark/table.svg') }}">
-							<span class="text">Audit Trail</span>
-						</a>
-					</li>
-					{{--
-					<li>
-						<a href="{{ route('analytics.index') }}">
-							<img class="icon" src="{{ asset('icon/dark/chart-line.svg') }}">
-							<span class="text">Analytics</span>
-						</a>
-					</li>
-					--}}
-					<li class="{{ Format::currentIndex($accountsRoute) ? 'current-page' : null }}">
-						<a href="{{ $accountsRoute }}">
-							<img class="icon" src="{{ asset('icon/dark/user-square.svg') }}">
-							<span class="text">Accounts</span>
-						</a>
-					</li>
-					<li class="{{ Format::currentIndex($rolesRoute) ? 'current-page' : null }}">
-						<a href="{{ $rolesRoute }}">
-							<img class="icon" src="{{ asset('icon/dark/user-gear.svg') }}">
-							<span class="text">Roles</span>
-						</a>
-					</li>
-					<li class="{{ Format::currentIndex($adminSignoutRoute) ? 'current-page' : null }}">
-						<a href="{{ $adminSignoutRoute }}">
-							<img class="icon" src="{{ asset('icon/dark/sign-out.svg') }}">
-							<span class="text">Sign out</span>
-						</a>
-					</li>
-				@endif
-				</ul>
-			</div>
-		</div>
-	</div>
-	@endif
-	<div class="main-main">
-		<main> 
-			<div class="main-content-header">
-				<div class="content-block">
-				@if ($index || $backRoute || $route)
-					<div class="nav-actions">
-					@if ($index)
-						<a href="#menu" class="main-menu-button">
-							<img alt="Menu" class="icon" src="{{ asset('icon/light/list.svg') }}">
-							<span class="text">Menu</span>
-						</a>
-					@elseif ($backRoute)
-						<a id="main-back-link" class="main-back-link" href="{{ $backRoute }}" >
-							<img alt="Back" class="icon" src="{{ asset('icon/light/caret-left.svg') }}">
-
-							<span class="text">Back to previous page</span>
-						</a>
-					@elseif ($route)
-						<a id="main-back-link" class="main-back-link" href="{{ route($route, $routeParams) }}" >
-							<img alt="Back" class="icon" src="{{ asset('icon/light/caret-left.svg') }}">
-							<span class="text">Back to previous page</span>
-						</a>
-					@endif
-					</div>
-				@endif
-					<h1 title="{{ $title }}" class="title">{{ $title ?? 'CSDHA' }}</h1>
-				</div>
-			</div>
-			<div {{ $attributes->merge(['class' => 'main-content']) }}>
-			@if ($hasToolbar)
-				<div class="main-toolbar">
-					<div class="content-block">
-						{{ $toolbar }}
-					</div>
-				</div>
+<body class="{{ $index ? 'index' : null }} {{ $form ? 'form' : null }}">
+	<div class="navbar-fixed">
+		<nav>
+			<div class="nav-wrapper">
+			@if ($index)
+				<a href="#" data-target="slide-out" class="sidenav-trigger">
+					<i class="material-icons">menu</i>
+				</a>
+			@elseif ($backRoute)
+				<a href="{{ $backRoute }}" class="back-button">
+					<i class="material-icons">arrow_back</i>
+				</a>
+			@elseif ($route)
+				<a href="{{ route($route, $routeParams) }}" class="back-button">
+					<i class="material-icons">arrow_back</i>
+				</a>
 			@endif
-				<div class="content-block">
-					{{ $slot }}
-				</div>
+				<span class="mt-nav-title">{{ $title }}</span>
+			@if (isset($toolbar) && !$toolbar->isEmpty())
+				<ul class="right hide-on-med-and-down">
+				{{ $toolbar }}
+				</ul>
+			@endif
 			</div>
-		</main>
+		</nav>
 	</div>
-</body>
+
+@if ($index)
+	<ul id="slide-out" class="sidenav sidenav-fixed">
+		<li><div class="user-view">
+			<!--div class="background">
+				<img src="images/office.jpg">
+			</div-->
+			<a href="#user"><img class="circle" src="images/yuna.jpg"></a>
+			<a href="#name"><span class="black-text name">John Doe</span></a>
+			<a href="#email"><span class="black-text email">jdandturk@gmail.com</span></a>
+		</div></li>
+		<li><div class="divider"></div></li>
+		<li class="{{ Format::currentIndex($userHomeRoute) ? 'active' : null }}">
+			<a class="waves-effect" href="{{ $userHomeRoute }}">
+				<i class="material-icons">home</i>
+				Home
+			</a>
+		</li>
+		<li class="{{ Format::currentIndex($gpoaRoute) ? 'active' : null }}">
+			<a class="waves-effect" href="{{ $gpoaRoute }}">
+				<i class="material-icons">ballot</i>
+				GPOA
+			</a>
+		</li>
+		<li>
+			<a class="waves-effect" href="#!">
+				<i class="material-icons">event</i>
+				Events
+			</a>
+		</li>
+		<li>
+			<a class="waves-effect" href="#!">
+				<i class="material-icons">article</i>
+				Accom. Reports
+			</a>
+		</li>
+		<li>
+			<a class="waves-effect" href="#!">
+				<i class="material-icons">person_pin</i>
+				Attendance
+			</a>
+		</li>
+		<li class="{{ Format::currentIndex($positionsRoute) ? 'active' : null }}">
+			<a class="waves-effect" href="{{ $positionsRoute }}">
+				<i class="material-icons">groups</i>
+				Council Body
+			</a>
+		</li>
+		<li>
+			<a class="waves-effect" href="{{ $userSignoutRoute }}">
+				<i class="material-icons">logout</i>
+				Log out
+			</a>
+		</li>
+	</ul>
+@endif
+	<main {{ $attributes }}>
+		{{ $slot }}
+	</main>
+</body> 
 </html>

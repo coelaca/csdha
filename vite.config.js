@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import path from 'path';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 export default defineConfig(({ command, mode }) => {
 	if (command === 'build' && mode === 'legacy') {
@@ -32,12 +33,23 @@ export default defineConfig(({ command, mode }) => {
 				],
 				refresh: true,
 			}),
+			viteStaticCopy({
+				targets: [
+					{
+						src: 'node_modules/material-icons/iconfont/*.woff2',
+						dest: 'assets' 
+					}
+				]
+			}),
 		],
 		build: {
 			minify: false,
 			cssMinify: false
 		},
 		server: {
+			watch: {
+				ignored: ['**/vendor/**', '**/storage/**'],
+			},
 			proxy: {
 				'/font': {
 					target: 'http://localhost:5173',

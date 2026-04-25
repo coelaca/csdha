@@ -1,43 +1,71 @@
-<x-layout.user has-toolbar index form title="General Plan of Activities" class="form gpoa index">
-	<x-slot:toolbar>
-	@if ($gpoa)
-		@can ('create', 'App\Models\GpoaActivity')
-		<a href="{{ route('gpoa.activities.create') }}">
-			<img class="icon" src="{{ asset('icon/light/plus.svg') }}">
-			<span class="text">Add Activity</span>
-		</a>
-		@endcan
-		@can ('close', 'App\Models\Gpoa')
-		<a id="gpoa_close-button" href="{{ route('gpoa.confirmClose') }}">
-			<img class="icon" src="{{ asset('icon/light/x-circle.svg') }}">
-			<span class="text">Close</span>
-		</a>
-		@endcan
-		@can ('update', 'App\Models\Gpoa')
-		<a href="{{ route('gpoa.edit') }}">
-			<img class="icon" src="{{ asset('icon/light/pencil-simple-line.svg') }}">
-			<span class="text">Edit</span>
-		</a>
-		@endcan
-		@can ('close', 'App\Models\Gpoa')
-		<a href="{{ route('gpoa.showGenPdf') }}">
-			<img class="icon" src="{{ asset('icon/light/file-plus.svg') }}">
-			<span class="text">View Report</span>
-		</a>
-		@endcan
-	@else
-		@can ('create', 'App\Models\Gpoa')
-		<a href="{{ route('gpoa.create') }}">
-			<img class="icon" src="{{ asset('icon/light/plus.svg') }}">
-			<span class="text">Create</span>
-		</a>
-		@endcan
-	@endif
-		<a href="{{ route('gpoas.old-index') }}">
-			<img class="icon" src="{{ asset('icon/light/archive.svg') }}">
-			<span class="text">Browse Closed GPOAs</span>
-		</a>
-	</x-slot:toolbar>
+<x-layout.user has-toolbar index title="General Plan of Activities" class="form gpoa index">
+@if ($gpoa)
+	@can ('create', 'App\Models\GpoaActivity')
+<div class="fixed-action-btn">
+	<a title="Add Activity" href="{{ route('gpoa.activities.create') }}" class="btn-floating btn-large">
+		<i class="material-icons">add</i>
+	</a>
+</div>
+	@endcan
+@else
+	@can ('create', 'App\Models\Gpoa')
+<div class="fixed-action-btn">
+	<a href="{{ route('gpoa.create') }}" class="btn-floating btn-large">
+		<i class="large material-icons">add</i>
+	</a>
+</div>
+	@endcan
+@endif
+
+<x-slot:toolbar>
+@if ($gpoa)
+	@can ('update', 'App\Models\Gpoa')
+	<li><a title="Edit" href="{{ route('gpoa.edit') }}">
+		<i class="material-icons">add</i>
+	</a></li>
+	@endcan
+	@can ('close', 'App\Models\Gpoa')
+	<li><a title="View Report" href="{{ route('gpoa.showGenPdf') }}">
+		<i class="material-icons">add</i>
+	</a></li>
+	@endcan
+	<li><a data-target="dropdown1" class="dropdown-trigger" title="More Menu" href="#">
+		<i class="material-icons">more_vert</i>
+	</a></li>
+@else
+	<li><a title="Browse Closed GPOAs" href="{{ route('gpoas.old-index') }}">
+		<i class="material-icons">archive</i>
+	</a></li>
+@endif
+</x-slot:toolbar>
+
+@if ($gpoa)
+<ul id="dropdown1" class="dropdown-content">
+	@can ('close', 'App\Models\Gpoa')
+	<li><a id="gpoa_close-button" href="{{ route('gpoa.confirmClose') }}">
+		<i class="material-icons">add</i>
+		Close
+	</a></li>
+	@endcan
+</ul>
+@endif
+
+<div class="mt-main-flat-panel">
+@if (!$gpoa)
+	<p>There is no active GPOA right now.</p>
+@else
+	@switch (auth()->user()->position_name)
+	@case('president')
+	@case('adviser')
+	<p>No one has submitted anything yet.</p>
+		@break
+	@default
+		<p>No one has added anything yet.</p>
+	@endswitch
+@endif
+</div>
+
+{{--
 	<div class="article">
 	@if (session('status') === 'returned')
 		<x-alert>
@@ -46,8 +74,7 @@
 	@else
 		<x-alert item-type="Activity"/>
 	@endif
-	@if (!$gpoa)
-		<p>There is no active GPOA right now.</p>
+
 	@elseif ($gpoa && $activities?->isNotEmpty())
         <table class="main-table articles table-2">
             <colgroup>
@@ -77,16 +104,6 @@
             </tbody>
         </table>
 		{{ $activities->links('paginator.simple') }}
-	@else
-		@switch (auth()->user()->position_name)
-		@case('president')
-		@case('adviser')
-		<p>No one has submitted anything yet.</p>
-			@break
-		@default
-			<p>No one has added anything yet.</p>
-		@endswitch
-	@endif
 	</div>
 @if ($gpoa)
 <x-window class="form" id="gpoa_close" title="Close GPOA">
@@ -103,4 +120,5 @@
 	</div>
 </x-window>
 @endif
+--}}
 </x-layout.user>
