@@ -58,11 +58,11 @@
         ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",
-            "npx concurrently \"php artisan serve\" \"mailpit\" \"./cron.sh\" \"php artisan pail --timeout=0\" \"pnpm run dev\" --names=server,mail,cron,logs,vite"
+            "APP_URL='http://127.0.0.1:8000' npx concurrently \"php artisan serve --host 127.0.0.1\" \"mailpit\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"pnpm run dev\" --names=server,mail,queue,logs,vite"
         ],
         "dev-admin": [
             "Composer\\Config::disableProcessTimeout",
-            "APP_URL='http://127.0.0.2:8000' npx concurrently \"php artisan serve --host 127.0.0.2\" \"mailpit\" \"php artisan queue:listen --tries=1\" \"php artisan queue:listen --queue pdf --tries=1\" \"php artisan pail --timeout=0\" \"pnpm run dev\" --names=server,mail,queue,queue-pdf,logs,vite"
+            "APP_URL='http://127.0.0.2:8000' npx concurrently \"php artisan serve --host 127.0.0.2\" \"mailpit\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"pnpm run dev\" --names=server,mail,queue,logs,vite"
         ],
         "prod": [
             "Composer\\Config::disableProcessTimeout",
