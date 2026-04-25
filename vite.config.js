@@ -38,6 +38,9 @@ export default defineConfig(({ command, mode }) => {
 			cssMinify: false
 		},
 		server: {
+            watch: {
+                ignored: ['**/vendor/**', '**/storage/**'],
+            },
 			proxy: {
 				'/font': {
 					target: 'http://localhost:5173',

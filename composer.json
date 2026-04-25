@@ -59,19 +59,19 @@
         ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",
-            "npx concurrently \"php artisan serve\" \"mailpit\" \"./cron.sh\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,mail,cron,logs,vite"
+            "npx concurrently \"php artisan serve\" \"mailpit\" \"./cron.sh\" \"php artisan pail --timeout=0\" \"pnpm run dev\" --names=server,mail,cron,logs,vite"
         ],
         "dev-admin": [
             "Composer\\Config::disableProcessTimeout",
-            "APP_URL='http://127.0.0.2:8000' npx concurrently \"php artisan serve --host 127.0.0.2\" \"mailpit\" \"php artisan queue:listen --tries=1\" \"php artisan queue:listen --queue pdf --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,mail,queue,queue-pdf,logs,vite"
+            "APP_URL='http://127.0.0.2:8000' npx concurrently \"php artisan serve --host 127.0.0.2\" \"mailpit\" \"php artisan queue:listen --tries=1\" \"php artisan queue:listen --queue pdf --tries=1\" \"php artisan pail --timeout=0\" \"pnpm run dev\" --names=server,mail,queue,queue-pdf,logs,vite"
         ],
         "prod": [
             "Composer\\Config::disableProcessTimeout",
-            "APP_URL='http://127.0.0.1:8000' npx concurrently \"php artisan serve --host 127.0.0.1\" \"mailpit\" \"./cron.sh\" \"php artisan pail --timeout=0\" \"npm run build\" --names=server,mail,cron,logs,vite"
+            "APP_URL='http://127.0.0.1:8000' npx concurrently \"php artisan serve --host 127.0.0.1\" \"mailpit\" \"./cron.sh\" \"php artisan pail --timeout=0\" \"pnpm run build\" --names=server,mail,cron,logs,vite"
         ],
         "prod-admin": [
             "Composer\\Config::disableProcessTimeout",
-            "APP_URL='http://127.0.0.2:8000' npx concurrently \"php artisan serve --host 127.0.0.2\" \"mailpit\" \"./cron.sh\" \"php artisan pail --timeout=0\" \"npm run build\" --names=server,mail,cron,logs,vite"
+            "APP_URL='http://127.0.0.2:8000' npx concurrently \"php artisan serve --host 127.0.0.2\" \"mailpit\" \"./cron.sh\" \"php artisan pail --timeout=0\" \"pnpm run build\" --names=server,mail,cron,logs,vite"
         ]
     },
     "extra": {
