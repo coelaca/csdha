@@ -6,7 +6,7 @@ set -e
 
 dir=/root/csdha
 
-git clone https://github.com/calibse/csdha.git ${dir}
+git clone https://github.com/coelaca/csdha.git ${dir}
 cp -r ${dir}/. .
 rm -rf ${dir}
 mkdir ${dir}
